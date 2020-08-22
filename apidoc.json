@@ -1,0 +1,10 @@
+{
+    "name": "Survey Form API Doc",
+    "version": "0.0.1",
+    "description": "Documentation for Survey Form REST APIs",
+    "title": "NodeJS-API-Boilerplate",
+    "url": "http://localhost:3000/",
+    "template": {
+        "forceLanguage": "en"
+    }
+}
