@@ -2,9 +2,28 @@
   "name": "survey-form-apis",
   "version": "1.0.0",
   "description": "A simple server that connects survey-form-ui and mongodb",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "nps build",
+    "start": "nps",
+    "test": "nps test",
+    "test:watch": "nps test.watch",
+    "dev": "NODE_ENV=development parcel build src/index.js --target node && node -r dotenv/config dist/index.js",
+    "dev:debug": "nps dev.debug",
+    "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
+    "precommit": "nps lintStaged && nps validate",
+    "checkCover": "nps test.checkCover",
+    "cover": "nps test.cover",
+    "db:seeds-user": "nps db.seedsUser",
+    "db:seeds-clear": "nps db.seedsClearUser",
+    "db:seeds-clear-user": "nps db.seedsClear",
+    "lint": "nps lint",
+    "lint:fix": "nps lint.fix",
+    "reportCoverage": "nps reportCoverage",
+    "doc": "nps doc",
+    "doc:deploy": "nps doc.deploy",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "repository": {
     "type": "git",
@@ -19,6 +38,7 @@
   "devDependencies": {
     "apidoc": "^0.25.0",
     "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
