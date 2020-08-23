@@ -8,7 +8,7 @@
     "start": "nps",
     "test": "nps test",
     "test:watch": "nps test.watch",
-    "dev": "NODE_ENV=development parcel build src/index.js --target node && node -r dotenv/config dist/index.js",
+    "dev": "NODE_ENV=development parcel build src/index.js --target node && nodemon -r dotenv/config dist/index.js",
     "dev:debug": "nps dev.debug",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
     "precommit": "nps lintStaged && nps validate",
@@ -62,6 +62,7 @@
     "chalk": "^4.1.0",
     "compression": "^1.7.4",
     "connect-rid": "0.0.1",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
@@ -77,6 +78,7 @@
     "pm2": "^4.4.1",
     "pretty-error": "^2.1.1",
     "sriracha": "^1.0.0",
+    "useragent": "^2.3.0",
     "uuid": "^8.3.0",
     "vhost": "^3.0.2"
   }
