@@ -8,7 +8,7 @@
     "start": "nps",
     "test": "nps test",
     "test:watch": "nps test.watch",
-    "dev": "NODE_ENV=development parcel build src/index.js --target node && nodemon -r dotenv/config dist/index.js",
+    "dev": "nps dev",
     "dev:debug": "nps dev.debug",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
     "precommit": "nps lintStaged && nps validate",
