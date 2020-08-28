@@ -17,6 +17,7 @@ let ResponseSchema = new Schema({
     },
     responses: [
         {
+            _id: false,
             questionId: Schema.Types.ObjectId,
             question: String,
             response: String
@@ -44,9 +45,12 @@ export async function submit(formId, client, responses) {
 }
 
 export async function list(formId, uid, { page = 1, limit = 50 }) {
+    console.log(uid, formId);
     if (typeof formId === 'string') {
         formId = Types.ObjectId(formId);
     }
+    let can = await canAccess(formId, uid);
+    console.log(can);
     if (await canAccess(formId, uid)) {
         let skipValue = constants.calculateSkipValue(page, limit);
         let responses = await Response.find({ formId }, "responses client").skip(skipValue).limit(limit).lean().exec();

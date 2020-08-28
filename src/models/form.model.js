@@ -33,7 +33,11 @@ let FormSchema = new Schema({
         enum: ['active', 'deleted', 'inactive']
     },
     deletedAt: Date,
-    closedAt: Date
+    closedAt: Date,
+    isPublished: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true,
     strict: 'throw',
@@ -73,7 +77,7 @@ export async function fetch(id, uid) {
                 description: form.description,
                 questionnaires: form.questionnaires
             }
-        } else return "Form not found";
+        } else throw "Form not found";
     }
 }
 
@@ -124,7 +128,7 @@ export async function edit(id, uid, { title, description, questionnaires, sectio
             createdAt: form.createdAt,
             updatedAt: form.updatedAt
         }
-    } else return "Form not found";
+    } else throw "Form not found";
 }
 
 export async function remove(id, uid) {
@@ -137,12 +141,21 @@ export async function remove(id, uid) {
 }
 
 export async function canAccess(id, uid) {
-    if (typeof id === 'string') {
-        id = Types.ObjectId(id);
-    }
-    let form = await Form.findOne({ _id: id, "client.uid": uid }).exec();
+    let form = await Form.findOne({ _id: id, "creator.uid": uid }).exec();
     if (form && form.id) return true;
     return false;
+}
+
+export async function publish(id, uid) {
+    let form = await Form.findOneAndUpdate({ _id: id, "creator.uid": uid, status: 'active' }, { isPublished: true }).lean().exec();
+    if (form) {
+        return {
+            id: form._id,
+            shareableLink: 'comingsoon'
+        };
+    } else {
+        throw "Form not found";
+    }
 }
 
 export default {
@@ -150,5 +163,6 @@ export default {
     fetch,
     list,
     edit,
-    remove
+    remove,
+    publish
 }

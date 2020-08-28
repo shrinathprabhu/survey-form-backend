@@ -15,7 +15,9 @@ let Questionnaire = new Schema({
         type: String,
         required: true,
         lowercase: true,
-        enum: ['text', 'paragraph', 'radiobutton', 'checkbox', 'dropdown', 'range']
+        trim: true,
+        enum: ['text', 'paragraph', 'radiobutton', 'checkbox', 'dropdown', 'range'],
+        default: 'text'
     },
     media: [
         {

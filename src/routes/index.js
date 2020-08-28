@@ -8,7 +8,7 @@ routes.use('/forms', FormApis);
 
 routes.all('*', (req, res, next) => {
     // Handle 404
-    res.json({ code: 404 });
+    res.status(404).send({ code: 404, message: 'Endpoint not found' });
 });
 
 export default routes;
