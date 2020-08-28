@@ -43,6 +43,9 @@ let Questionnaire = new Schema({
         required: true,
         default: false
     }
+}, {
+    versionKey: false,
+    timestamps: true
 });
 
 export default Questionnaire;
