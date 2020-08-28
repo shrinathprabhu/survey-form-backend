@@ -12,8 +12,8 @@ let isHttps;
 if (isProductionEnv && (constants.ssl.key && constants.ssl.cert)) {
     isHttps = true;
     server = https.createServer({
-        key: readFileSync(constants.ssl.key),
-        cert: readFileSync(constants.ssl.cert)
+        key: readFileSync(constants.ssl.key, 'utf8'),
+        cert: readFileSync(constants.ssl.cert, 'utf8')
     }, app);
 } else {
     isHttps = false;

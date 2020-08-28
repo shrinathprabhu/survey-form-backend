@@ -15,18 +15,28 @@ export default function (app) {
     app.use(function (req, res, next) {
         let cookie = req.signedCookies.uid;
         if (cookie === undefined) {
-            res.cookie('uid', uuidv4(), { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+            let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + 10000) });
+            cookie = uid;
+            res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+        } else {
+            let parsedCookie = JSON.parse(cookie);
+            if (new Date(parsedCookie.expiry) < new Date()) {
+                let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + 10000) });
+                cookie = uid;
+                res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+            }
         }
         let clientUA = useragent.parse(req.headers['user-agent']);
         let ip = req.socket.remoteAddress;
         if (ip.startsWith("::ffff:")) {
             ip = ip.replace("::ffff:", "");
         }
-        res.locals.client = {
+        let parsedCookie = JSON.parse(cookie);
+        req.client = {
             userAgent: req.headers['user-agent'],
             browser: clientUA.family,
             os: clientUA.os.family,
-            uid: req.signedCookies.uid,
+            uid: parsedCookie.uid,
             ip
         }
         next();

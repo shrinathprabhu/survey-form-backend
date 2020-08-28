@@ -9,7 +9,7 @@ constants.ssl = {
 }
 constants.hour = 60 * 60 * 1000;
 constants.day = 24 * constants.hour;
-constants.cookieMaxAge = 7 * constants.day;
+constants.cookieMaxAge = 4 * 365 * constants.day;
 /**
  * 
  * @param {Number} page 
