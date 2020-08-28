@@ -43,7 +43,8 @@ export async function remove(req, res, next) {
 
 export async function list(req, res, next) {
     try {
-        let uid = res.locals.client.uid;
+        let uid = req.client.uid;
+        console.log(req.client);
         let { page, limit } = req.query;
         let forms = await FormModel.list(uid, { page: page ? Number(page) : 1, limit: limit ? Number(limit) : 20 });
         return res.success("List fetched", forms);
