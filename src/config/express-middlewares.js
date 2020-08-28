@@ -23,20 +23,21 @@ export default function (app) {
 
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
+    let cookieExpiry = constants.hour / 12;
     if (cookie === undefined) {
-        let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + 10000) });
+        let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
         res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
     } else {
         try {
             let parsedCookie = JSON.parse(cookie);
             if (new Date(parsedCookie.expiry) < new Date()) {
-                let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + 10000) });
+                let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + cookieExpiry) });
                 cookie = uid;
                 res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
             }
         } catch (e) {
-            let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + 10000) });
+            let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
             cookie = uid;
             res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
         }
