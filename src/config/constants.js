@@ -30,10 +30,10 @@ constants.calculateSkipValue = function (page, limit) {
  */
 constants.paginate = function (page, limit, totalRecords, list) {
     return {
-        currentPage: page,
-        recordsFetched: list.length,
+        page,
+        size: list.length,
         totalRecords,
-        totalPages: Math.ceil(totalRecords / limit),
+        pages: Math.ceil(totalRecords / limit),
         list
     }
 }
