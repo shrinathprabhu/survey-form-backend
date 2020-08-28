@@ -1,6 +1,7 @@
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 import db from '../config/database';
 import constants from '../config/constants';
+import QuestionnaireSchema from './questionnaire.schema';
 
 let FormSchema = new Schema({
     title: {
@@ -13,52 +14,7 @@ let FormSchema = new Schema({
         type: String,
         trim: true
     },
-    questionnaires: [
-        {
-            question: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            description: {
-                type: String,
-                trim: true
-            },
-            answerType: {
-                type: String,
-                required: true,
-                lowercase: true,
-                enum: ['text', 'paragraph', 'radiobutton', 'checkbox', 'dropdown', 'range']
-            },
-            media: [
-                {
-                    _id: false,
-                    type: { type: String },
-                    url: String,
-                }
-            ],
-            options: [
-                {
-                    _id: false,
-                    rank: Number,
-                    name: {
-                        type: String,
-                        trim: true
-                    }
-                }
-            ],
-            isRequired: {
-                type: Boolean,
-                required: true,
-                default: false
-            },
-            section: {
-                type: Boolean,
-                required: true,
-                default: false
-            }
-        }
-    ],
+    questionnaires: [QuestionnaireSchema],
     creator: {
         uid: String,
         ip: String,
@@ -142,6 +98,15 @@ export async function remove(id, uid) {
     } else {
         throw "Form not found";
     }
+}
+
+export async function canAccess(id, uid) {
+    if (typeof id === 'string') {
+        id = Types.ObjectId(id);
+    }
+    let form = await Form.findOne({ _id: id, "client.uid": uid }).exec();
+    if (form && form.id) return true;
+    return false;
 }
 
 export default {
