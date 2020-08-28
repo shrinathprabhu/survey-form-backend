@@ -24,7 +24,7 @@ export async function create(req, res, next) {
 
 export async function edit(req, res, next) {
     try {
-        let formId = req.params.id;
+        let id = req.params.id;
         let uid = req.client.uid;
         let {
             title,

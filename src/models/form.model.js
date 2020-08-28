@@ -16,7 +16,7 @@ let FormSchema = new Schema({
     },
     questionnaires: [QuestionnaireSchema],
     section: {
-        isExist: Boolean,
+        isExists: Boolean,
         type: { type: String, enum: ['list', 'stepper'] }
     },
     creator: {
@@ -107,7 +107,10 @@ export async function edit(id, uid, { title, description, questionnaires, sectio
             return questionnaire;
         });
     }
-    let form = await Form.findOneAndUpdate({ _id: id, "creator.uid": uid, status: { $in: ['active', 'inactive'] } }, data).exec();
+    let form = await Form.findOneAndUpdate(
+        { _id: id, "creator.uid": uid, status: { $in: ['active', 'inactive'] } },
+        data,
+        { new: true }).exec();
     if (form) {
         form = form.toJSON();
         return {

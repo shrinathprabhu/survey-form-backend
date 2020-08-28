@@ -4,7 +4,8 @@ let Questionnaire = new Schema({
     question: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        default: 'Untitled Question'
     },
     description: {
         type: String,
