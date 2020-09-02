@@ -14,7 +14,10 @@ export default function (app) {
     app.use(cookieParser(constants.cookieSecret));
     app.use(secureClient);
     app.use(compression());
-    app.use(cors());
+    app.use(cors({
+        origin: 'http://localhost:8080',
+        credentials: true
+    }));
     app.use(helmet());
     app.use(methodOverride());
     app.use(bodyParser.json());
@@ -24,6 +27,7 @@ export default function (app) {
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     let cookieExpiry = constants.hour / 12;
+    console.log(cookie);
     if (cookie === undefined) {
         let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
@@ -34,7 +38,7 @@ function secureClient(req, res, next) {
             if (new Date(parsedCookie.expiry) < new Date()) {
                 let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + cookieExpiry) });
                 cookie = uid;
-                res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+                res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret, httpOnly: true });
             }
         } catch (e) {
             let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });

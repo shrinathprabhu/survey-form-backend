@@ -47,7 +47,7 @@ let FormSchema = new Schema({
 let Form = db.model('forms', FormSchema);
 
 export async function create({ title, description, creator }) {
-    console.log(title, description, creator);
+    // console.log(title, description, creator);
     let form = (await Form.create({ title, description, creator, status: 'active' })).toJSON();
     return {
         id: form._id,
