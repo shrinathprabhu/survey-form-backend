@@ -69,7 +69,7 @@ export async function fetch(id, uid) {
             isCreator: true
         }
     } else {
-        form = (await Form.findOne({ _id: id, status: 'active' }, "title description questionnaires").exec()).toJSON();
+        form = await Form.findOne({ _id: id, status: 'active' }, "title description questionnaires").lean().exec();
         if (form) {
             return {
                 id: form._id,
@@ -83,7 +83,7 @@ export async function fetch(id, uid) {
 
 export async function list(uid, { page = 1, limit = 20 }) {
     let skipValue = constants.calculateSkipValue(page, limit);
-    let forms = await Form.find({ "creator.uid": uid, status: { $in: ['active', 'inactive'] } }, "title description").skip(skipValue).limit(limit).lean().exec();
+    let forms = await Form.find({ "creator.uid": uid, status: { $in: ['active', 'inactive'] } }, "title description").sort({ createdAt: -1 }).skip(skipValue).limit(limit).lean().exec();
     let totalRecords = await Form.countDocuments({ "creator.uid": uid, status: 'active' }).exec();
     let list = forms.map(form => {
         return {

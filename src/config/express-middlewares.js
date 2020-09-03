@@ -27,7 +27,7 @@ export default function (app) {
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     let cookieExpiry = constants.hour / 12;
-    console.log(cookie);
+    // console.log(cookie);
     if (cookie === undefined) {
         let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
