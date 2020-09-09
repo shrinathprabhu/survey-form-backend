@@ -13,7 +13,7 @@ module.exports = {
         },
         clean: {
             description: 'Clean dist folder.',
-            default: concurrent.nps(rimraf('dist'), rimraf('.cache')),
+            default: rimraf('dist'),
         },
         default: {
             description: 'Start project with pm2 on production.',
