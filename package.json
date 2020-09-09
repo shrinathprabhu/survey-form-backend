@@ -6,24 +6,13 @@
   "scripts": {
     "build": "nps build",
     "start": "nps",
-    "test": "nps test",
-    "test:watch": "nps test.watch",
     "dev": "nps dev",
     "dev:debug": "nps dev.debug",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
-    "precommit": "nps lintStaged && nps validate",
-    "checkCover": "nps test.checkCover",
-    "cover": "nps test.cover",
-    "db:seeds-user": "nps db.seedsUser",
-    "db:seeds-clear": "nps db.seedsClearUser",
-    "db:seeds-clear-user": "nps db.seedsClear",
     "lint": "nps lint",
     "lint:fix": "nps lint.fix",
-    "reportCoverage": "nps reportCoverage",
     "doc": "nps doc",
-    "doc:deploy": "nps doc.deploy",
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "doc:deploy": "nps doc.deploy"
   },
   "repository": {
     "type": "git",
