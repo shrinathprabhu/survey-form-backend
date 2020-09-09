@@ -16,8 +16,8 @@ let Questionnaire = new Schema({
         required: true,
         lowercase: true,
         trim: true,
-        enum: ['text', 'paragraph', 'radiobutton', 'checkbox', 'dropdown', 'range'],
-        default: 'text'
+        enum: ['Short answer', 'Paragraph', 'Multiple choice', 'Checkbox', 'Dropdown', 'Range', 'Date', 'Time'],
+        default: 'Short answer'
     },
     media: [
         {
@@ -33,6 +33,9 @@ let Questionnaire = new Schema({
             name: {
                 type: String,
                 trim: true
+            },
+            other: {
+                type: Boolean
             }
         }
     ],
@@ -42,9 +45,8 @@ let Questionnaire = new Schema({
         default: false
     },
     section: {
-        type: Boolean,
-        required: true,
-        default: false
+        type: Number,
+        name: String
     }
 }, {
     versionKey: false,
