@@ -13,7 +13,7 @@ export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
     app.use((req, res, next) => {
-        console.log(req.headers);
+        // console.log(req.headers);
         next();
     });
     app.use(cors({
@@ -31,7 +31,7 @@ export default function (app) {
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     let cookieExpiry = constants.hour / 12;
-    console.log("Cookie UID", cookie);
+    console.log("Cookies", req.cookies, req.signedCookies);
     if (cookie === undefined) {
         let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
