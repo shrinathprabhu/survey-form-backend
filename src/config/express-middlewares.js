@@ -11,13 +11,13 @@ import useragent from 'useragent';
 
 export default function (app) {
     app.use(morgan('tiny'));
-    app.use(cookieParser(constants.cookieSecret));
-    app.use(secureClient);
     app.use(compression());
     app.use(cors({
         origin: 'http://localhost:8080',
         credentials: true
     }));
+    app.use(cookieParser(constants.cookieSecret));
+    app.use(secureClient);
     app.use(helmet());
     app.use(methodOverride());
     app.use(bodyParser.json());
