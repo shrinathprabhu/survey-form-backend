@@ -17,7 +17,7 @@ export default function (app) {
         next();
     });
     app.use(cors({
-        origin: true,
+        // origin: true,
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
@@ -35,7 +35,10 @@ function secureClient(req, res, next) {
     if (cookie === undefined) {
         let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
-        res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+        res.cookie('uid', uid, {
+            maxAge: constants.cookieMaxAge,
+            // signed: true, secret: constants.cookieSecret 
+        });
     } else {
         try {
             let parsedCookie = JSON.parse(cookie);
