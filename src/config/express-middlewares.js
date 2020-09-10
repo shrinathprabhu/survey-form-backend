@@ -42,12 +42,18 @@ function secureClient(req, res, next) {
             if (new Date(parsedCookie.expiry) < new Date()) {
                 let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + cookieExpiry) });
                 cookie = uid;
-                res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret, httpOnly: true });
+                res.cookie('uid', uid, {
+                    maxAge: constants.cookieMaxAge,
+                    // signed: true, secret: constants.cookieSecret, httpOnly: true 
+                });
             }
         } catch (e) {
             let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
             cookie = uid;
-            res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+            res.cookie('uid', uid, {
+                maxAge: constants.cookieMaxAge,
+                // signed: true, secret: constants.cookieSecret, httpOnly: true
+            });
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
