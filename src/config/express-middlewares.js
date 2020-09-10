@@ -37,7 +37,7 @@ function secureClient(req, res, next) {
         cookie = uid;
         res.cookie('uid', uid, {
             maxAge: constants.cookieMaxAge,
-            signed: true, secret: constants.cookieSecret, sameSite: 'None'
+            signed: true, secret: constants.cookieSecret, sameSite: 'None', secure: true
         });
     } else {
         try {
@@ -47,7 +47,7 @@ function secureClient(req, res, next) {
                 cookie = uid;
                 res.cookie('uid', uid, {
                     maxAge: constants.cookieMaxAge,
-                    signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None'
+                    signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None', secure: true
                 });
             }
         } catch (e) {
@@ -55,7 +55,7 @@ function secureClient(req, res, next) {
             cookie = uid;
             res.cookie('uid', uid, {
                 maxAge: constants.cookieMaxAge,
-                signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None'
+                signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None', secure: true
             });
         }
     }
