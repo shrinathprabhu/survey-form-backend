@@ -12,6 +12,10 @@ import useragent from 'useragent';
 export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
+    app.use((req, res, next) => {
+        console.log(req.headers);
+        next();
+    });
     app.use(cors({
         origin: 'http://localhost:8080',
         credentials: true
