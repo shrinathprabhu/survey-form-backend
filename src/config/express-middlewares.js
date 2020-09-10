@@ -17,7 +17,7 @@ export default function (app) {
         next();
     });
     app.use(cors({
-        origin: 'http://localhost:8080',
+        origin: true,
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
@@ -51,7 +51,7 @@ function secureClient(req, res, next) {
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
-    let ip = req.socket.remoteAddress;
+    let ip = req.headers['x-forwarded-for'];
     if (ip.startsWith("::ffff:")) {
         ip = ip.replace("::ffff:", "");
     }
