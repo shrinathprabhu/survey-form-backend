@@ -1,1 +1,1 @@
-web: npm run build && nodemon -r dotenv/config dist/server.js
+web: npm run build && npm start
