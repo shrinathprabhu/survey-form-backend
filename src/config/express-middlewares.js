@@ -17,7 +17,7 @@ export default function (app) {
         next();
     });
     app.use(cors({
-        // origin: true,
+        origin: "http://localhost:8080",
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
