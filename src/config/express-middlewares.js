@@ -12,10 +12,10 @@ import useragent from 'useragent';
 export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
-    app.use((req, res, next) => {
-        // console.log(req.headers);
-        next();
-    });
+    // app.use((req, res, next) => {
+    //     // console.log(req.headers);
+    //     next();
+    // });
     app.use(cors({
         origin: "http://localhost:8080",
         credentials: true
@@ -31,7 +31,7 @@ export default function (app) {
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     let cookieExpiry = constants.hour / 12;
-    console.log("Cookies", req.cookies, req.signedCookies);
+    // console.log("Cookies", req.cookies, req.signedCookies);
     if (cookie === undefined) {
         let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
         cookie = uid;
@@ -60,7 +60,7 @@ function secureClient(req, res, next) {
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
-    let ip = req.headers['x-forwarded-for'];
+    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     if (ip.startsWith("::ffff:")) {
         ip = ip.replace("::ffff:", "");
     }
