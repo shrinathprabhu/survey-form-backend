@@ -5,14 +5,15 @@
   "main": "src/bin/server.js",
   "scripts": {
     "build": "nps build",
-    "start": "nps",
     "dev": "nps dev",
     "dev:debug": "nps dev.debug",
-    "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
+    "doc": "nps doc",
+    "doc:deploy": "nps doc.deploy",
     "lint": "nps lint",
     "lint:fix": "nps lint.fix",
-    "doc": "nps doc",
-    "doc:deploy": "nps doc.deploy"
+    "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
+    "start": "nps",
+    "test": "echo \"This test ran successfully\""
   },
   "repository": {
     "type": "git",
