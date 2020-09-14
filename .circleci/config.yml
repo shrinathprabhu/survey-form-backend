@@ -1,14 +1,10 @@
 version: 2.1
 orbs:
-  heroku: circleci/heroku@1.2.2
   node: circleci/node@3.0.0
-workflows:
-  heroku_deploy:
-    jobs:
-      - build
-      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
-          requires:
-            - build
-          filters:
-            branches:
-              only: heroku
+jobs:
+  build:
+    steps:
+      - checkout
+      - run:
+          name: "Running tests"
+          command: "npm test"
