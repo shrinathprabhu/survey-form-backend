@@ -15,7 +15,7 @@ export default function (app) {
     app.use(secureClient);
     app.use(compression());
     app.use(cors({
-        origin: 'http://localhost:8080',
+        origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]\:8080/],
         credentials: true
     }));
     app.use(helmet());
@@ -26,24 +26,17 @@ export default function (app) {
 
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
-    let cookieExpiry = constants.hour / 12;
     // console.log(cookie);
     if (cookie === undefined) {
-        let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
-        cookie = uid;
-        res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+        cookie = createAndSetUID(res);
     } else {
         try {
             let parsedCookie = JSON.parse(cookie);
             if (new Date(parsedCookie.expiry) < new Date()) {
-                let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + cookieExpiry) });
-                cookie = uid;
-                res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret, httpOnly: true });
+                cookie = createAndSetUID(res, parsedCookie);
             }
         } catch (e) {
-            let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
-            cookie = uid;
-            res.cookie('uid', uid, { maxAge: constants.cookieMaxAge, signed: true, secret: constants.cookieSecret });
+            cookie = createAndSetUID(res);
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
@@ -60,4 +53,24 @@ function secureClient(req, res, next) {
         ip
     }
     next();
+}
+
+function createAndSetUID(res, parsedCookie) {
+    let cookieExpiry = constants.hour / 12;
+    let cookieUID;
+    if (parsedCookie) {
+        cookieUID = parsedCookie.uid;
+    } else {
+        cookieUID = uuidv4();
+    }
+    let uid = JSON.stringify({ uid: cookieUID, expiry: new Date(Date.now() + cookieExpiry) });
+    res.cookie('uid', uid, {
+        maxAge: constants.cookieMaxAge,
+        signed: true,
+        secret: constants.cookieSecret,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
+    });
+    return uid;
 }
