@@ -25,11 +25,11 @@ app.response.error = function (message, data, displayMessage, code) {
     message = typeof message != 'string' ? 'Something went wrong' : message;
     this
         .status(200)
-        .send(response('error', message, data, displayMessage, code));
+        .send(response({ type: 'error', message, data, displayMessage, code }));
     console.log(chalk.bgRed(chalk.black("Exited with Error Response\n")));
 }
 
-function response(type, message, data, displayMessage, code) {
+function response({ type, message, data, displayMessage, code }) {
     let defaultCode = type === 'success' ? 200 : 500;
     return {
         code: code || defaultCode,
