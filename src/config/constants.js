@@ -3,6 +3,7 @@ let constants = {};
 constants.mongoUrl = process.env.MONGO_URL;
 constants.port = process.env.PORT;
 constants.cookieSecret = process.env.COOKIE_SECRET;
+constants.testingProtection = true;
 constants.ssl = {
     key: process.env.SSL_KEY_PATH,
     cert: process.env.SSL_CERT_PATH

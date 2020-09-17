@@ -12,12 +12,8 @@ import useragent from 'useragent';
 export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
-    // app.use((req, res, next) => {
-    //     // console.log(req.headers);
-    //     next();
-    // });
     app.use(cors({
-        origin: "https://openforms.herokuapp.com",
+        origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]\:8080/],
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
@@ -30,40 +26,21 @@ export default function (app) {
 
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
-    let cookieExpiry = constants.hour / 12;
-    // console.log("Cookies", req.cookies, req.signedCookies);
-    if (cookie === undefined) {
-        let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
-        cookie = uid;
-        res.cookie('uid', uid, {
-            maxAge: constants.cookieMaxAge,
-            signed: true, secret: constants.cookieSecret, sameSite: 'None', secure: true
-        });
-    } else {
+    if (cookie === undefined)
+        cookie = createAndSetUID(res);
+    else {
         try {
             let parsedCookie = JSON.parse(cookie);
-            if (new Date(parsedCookie.expiry) < new Date()) {
-                let uid = JSON.stringify({ uid: parsedCookie.uid, expiry: new Date(Date.now() + cookieExpiry) });
-                cookie = uid;
-                res.cookie('uid', uid, {
-                    maxAge: constants.cookieMaxAge,
-                    signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None', secure: true
-                });
-            }
+            if (new Date(parsedCookie.expiry) < new Date())
+                cookie = createAndSetUID(res, parsedCookie);
         } catch (e) {
-            let uid = JSON.stringify({ uid: uuidv4(), expiry: new Date(Date.now() + cookieExpiry) });
-            cookie = uid;
-            res.cookie('uid', uid, {
-                maxAge: constants.cookieMaxAge,
-                signed: true, secret: constants.cookieSecret, httpOnly: true, sameSite: 'None', secure: true
-            });
+            cookie = createAndSetUID(res);
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
-    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    if (ip.startsWith("::ffff:")) {
+    let ip = req.socket.remoteAddress;
+    if (ip.startsWith("::ffff:"))
         ip = ip.replace("::ffff:", "");
-    }
     let parsedCookie = JSON.parse(cookie);
     req.client = {
         userAgent: req.headers['user-agent'],
@@ -73,4 +50,24 @@ function secureClient(req, res, next) {
         ip
     }
     next();
+}
+
+function createAndSetUID(res, parsedCookie) {
+    let cookieExpiry = constants.hour / 12;
+    let cookieUID;
+    if (parsedCookie) {
+        cookieUID = parsedCookie.uid;
+    } else {
+        cookieUID = uuidv4();
+    }
+    let uid = JSON.stringify({ uid: cookieUID, expiry: new Date(Date.now() + cookieExpiry) });
+    res.cookie('uid', uid, {
+        maxAge: constants.cookieMaxAge,
+        signed: true,
+        secret: constants.cookieSecret,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
+    });
+    return uid;
 }
