@@ -26,24 +26,21 @@ export default function (app) {
 
 function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
-    // console.log(cookie);
-    if (cookie === undefined) {
+    if (cookie === undefined)
         cookie = createAndSetUID(res);
-    } else {
+    else {
         try {
             let parsedCookie = JSON.parse(cookie);
-            if (new Date(parsedCookie.expiry) < new Date()) {
+            if (new Date(parsedCookie.expiry) < new Date())
                 cookie = createAndSetUID(res, parsedCookie);
-            }
         } catch (e) {
             cookie = createAndSetUID(res);
         }
     }
     let clientUA = useragent.parse(req.headers['user-agent']);
     let ip = req.socket.remoteAddress;
-    if (ip.startsWith("::ffff:")) {
+    if (ip.startsWith("::ffff:"))
         ip = ip.replace("::ffff:", "");
-    }
     let parsedCookie = JSON.parse(cookie);
     req.client = {
         userAgent: req.headers['user-agent'],
