@@ -13,7 +13,7 @@ app.response.success = function (message, data, displayMessage, code) {
     console.log(chalk.green(message));
     this
         .status(200)
-        .send(response('success', message, data, displayMessage, code));
+        .send(response({ type: 'success', message, data, displayMessage, code }));
     console.log(chalk.bgGreen(chalk.black("Exited with Success Response\n")));
 }
 

@@ -13,7 +13,7 @@ export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
     app.use(cors({
-        origin: 'https://openforms.herokuapp.com',
+        origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]\:8080/],
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
@@ -25,31 +25,36 @@ export default function (app) {
 }
 
 function secureClient(req, res, next) {
-    let cookie = req.signedCookies.uid;
-    if (cookie === undefined)
-        cookie = createAndSetUID(res);
-    else {
-        try {
-            let parsedCookie = JSON.parse(cookie);
-            if (new Date(parsedCookie.expiry) < new Date())
-                cookie = createAndSetUID(res, parsedCookie);
-        } catch (e) {
+    try {
+        let cookie = req.signedCookies.uid;
+        if (cookie === undefined)
             cookie = createAndSetUID(res);
+        else {
+            try {
+                let parsedCookie = JSON.parse(cookie);
+                if (new Date(parsedCookie.expiry) < new Date())
+                    cookie = createAndSetUID(res, parsedCookie);
+            } catch (e) {
+                cookie = createAndSetUID(res);
+            }
         }
+        let clientUA = useragent.parse(req.headers['user-agent']);
+        let ip = req.socket.remoteAddress;
+        if (ip.startsWith("::ffff:"))
+            ip = ip.replace("::ffff:", "");
+        let parsedCookie = JSON.parse(cookie);
+        req.client = {
+            userAgent: req.headers['user-agent'],
+            browser: clientUA.family,
+            os: clientUA.os.family,
+            uid: parsedCookie.uid,
+            ip
+        }
+        next();
+    } catch (e) {
+        console.log(e);
+        res.error(e);
     }
-    let clientUA = useragent.parse(req.headers['user-agent']);
-    let ip = req.socket.remoteAddress;
-    if (ip.startsWith("::ffff:"))
-        ip = ip.replace("::ffff:", "");
-    let parsedCookie = JSON.parse(cookie);
-    req.client = {
-        userAgent: req.headers['user-agent'],
-        browser: clientUA.family,
-        os: clientUA.os.family,
-        uid: parsedCookie.uid,
-        ip
-    }
-    next();
 }
 
 function createAndSetUID(res, parsedCookie) {
