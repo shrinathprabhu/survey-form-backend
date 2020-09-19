@@ -9,6 +9,7 @@
     "dev:debug": "nps dev.debug",
     "doc": "nps doc",
     "doc:deploy": "nps doc.deploy",
+    "heroku:deploy": "nps heroku.deploy",
     "lint": "nps lint",
     "lint:fix": "nps lint.fix",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",

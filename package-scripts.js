@@ -39,6 +39,13 @@ module.exports = {
                 script: concurrent.nps('dev.watch', 'dev.withDebug'),
             },
         },
+        doc: {
+            default: "apidoc -i src",
+            deploy: series('nps doc', `surge ./doc -d ${process.env.DOCS_WEBSITE}`),
+        },
+        heroku: {
+            deploy: `${crossEnv('NODE_ENV=production')} parcel build src/bin/server.js --target node && nodemon -r dotenv/config dist/server.js`
+        },
         lint: {
             default: 'eslint src',
             fix: 'eslint --fix src',
