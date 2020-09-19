@@ -42,6 +42,10 @@ module.exports = {
         lint: {
             default: 'eslint src',
             fix: 'eslint --fix src',
+        },
+        test: {
+            description: 'Started tests',
+            default: 'jest --coverage=true --forceExit --detectOpenHandles --colors'
         }
     }
 }
