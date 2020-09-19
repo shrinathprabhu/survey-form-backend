@@ -13,7 +13,7 @@ export default function (app) {
     app.use(morgan('tiny'));
     app.use(compression());
     app.use(cors({
-        origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]\:8080/],
+        origin: 'https://openforms.herokuapp.com',
         credentials: true
     }));
     app.use(cookieParser(constants.cookieSecret));
