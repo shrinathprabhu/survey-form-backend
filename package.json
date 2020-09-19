@@ -13,7 +13,7 @@
     "lint:fix": "nps lint.fix",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
     "start": "nps",
-    "test": "echo \"This test ran successfully\""
+    "test": "nps test"
   },
   "repository": {
     "type": "git",
