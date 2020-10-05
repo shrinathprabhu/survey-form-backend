@@ -14,7 +14,6 @@ let Questionnaire = new Schema({
     answerType: {
         type: String,
         required: true,
-        lowercase: true,
         trim: true,
         enum: ['Short answer', 'Paragraph', 'Multiple choice', 'Checkbox', 'Dropdown', 'Range', 'Date', 'Time'],
         default: 'Short answer'
@@ -39,6 +38,9 @@ let Questionnaire = new Schema({
             }
         }
     ],
+    range: {
+
+    },
     isRequired: {
         type: Boolean,
         required: true,
