@@ -37,6 +37,10 @@ let FormSchema = new Schema({
     isPublished: {
         type: Boolean,
         default: false
+    },
+    colorScheme: {
+        theme: String,
+        background: String
     }
 }, {
     timestamps: true,
@@ -107,9 +111,7 @@ export async function edit(id, uid, { title, description, questionnaires, sectio
         data.section = section;
     }
     if (questionnaires instanceof Array) {
-        data.questionnaires = questionnaires.map(questionnaire => {
-            return questionnaire;
-        });
+        data.questionnaires = questionnaires;
     }
     let form = await Form.findOneAndUpdate(
         { _id: id, "creator.uid": uid, status: { $in: ['active', 'inactive'] } },

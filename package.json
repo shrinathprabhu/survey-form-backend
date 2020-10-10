@@ -70,6 +70,7 @@
     "mongoose": "^5.10.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
+    "needle": "^2.5.2",
     "pm2": "^4.4.1",
     "pretty-error": "^2.1.1",
     "sriracha": "^1.0.0",

@@ -7,6 +7,7 @@ let Questionnaire = new Schema({
         trim: true,
         default: 'Untitled Question'
     },
+    index: Number,
     description: {
         type: String,
         trim: true
@@ -39,12 +40,22 @@ let Questionnaire = new Schema({
         }
     ],
     range: {
-
+        lowerLimit: Number,
+        upperLimit: Number,
+        numberOfSteps: Number,
+        single: Boolean
     },
     isRequired: {
         type: Boolean,
         required: true,
         default: false
+    },
+    validation: {
+        needed: Boolean,
+        rule: {
+            type: { type: String },
+            value: String
+        }
     },
     section: {
         type: Number,
