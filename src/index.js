@@ -35,7 +35,12 @@ app.response.error = function error(message, data, displayMessage, code) {
   if (data) {
     console.log(chalk.red(data));
   }
-  const resMessage = typeof message !== 'string' ? 'Something went wrong' : message;
+  let resMessage;
+  if (message instanceof Error) {
+    resMessage = message.message;
+  } else {
+    resMessage = typeof message !== 'string' ? 'Something went wrong' : message;
+  }
   this
     .status(200)
     .send(response({
