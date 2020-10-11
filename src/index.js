@@ -17,7 +17,7 @@ function response({
   };
 }
 
-middlewaresConfig(app);
+middlewaresConfig.init(app);
 app.use('/', apis);
 
 app.response.success = function success(message, data, displayMessage, code) {
@@ -43,5 +43,8 @@ app.response.error = function error(message, data, displayMessage, code) {
     }));
   // console.log(chalk.bgRed(chalk.black('Exited with Error Response\n')));
 };
+
+// Catch thrown errors and send report to sentry
+middlewaresConfig.trace(app);
 
 export default app;

@@ -7,6 +7,8 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { v4 as uuidv4 } from 'uuid';
 import useragent from 'useragent';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 import constants from './constants';
 
 function createAndSetUID(res, parsedCookie) {
@@ -59,17 +61,33 @@ function secureClient(req, res, next) {
   }
 }
 
-export default function expressMiddlewares(app) {
-  app.use(morgan('tiny'));
-  app.use(compression());
-  app.use(cors({
-    origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]:8080/],
-    credentials: true,
-  }));
-  app.use(cookieParser(constants.cookieSecret));
-  app.use(secureClient);
-  app.use(helmet());
-  app.use(methodOverride());
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-}
+export default {
+  init: function init(app) {
+    app.use(morgan('tiny'));
+    app.use(compression());
+    app.use(cors({
+      origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]:8080/],
+      credentials: true,
+    }));
+    app.use(helmet());
+    // Starting sentry handlers
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      integrations: [
+        new Sentry.Integrations.Http({ tracing: true }),
+        new Tracing.Integrations.Express({ app }),
+      ],
+      tracesSampleRate: 1.0,
+    });
+    app.use(Sentry.Handlers.requestHandler());
+    app.use(Sentry.Handlers.tracingHandler());
+    app.use(cookieParser(constants.cookieSecret));
+    app.use(secureClient);
+    app.use(methodOverride());
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+  },
+  trace: function trace(app) {
+    app.use(Sentry.Handlers.errorHandler());
+  },
+};
