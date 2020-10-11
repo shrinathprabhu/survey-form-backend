@@ -9,6 +9,7 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
-heroku_deploy:
+workflows:
+  heroku_deploy:
     jobs:
       - heroku/deploy-via-git
