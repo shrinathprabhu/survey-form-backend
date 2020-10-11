@@ -11,6 +11,18 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import constants from './constants';
 
+function validateCookie(cookie) {
+  try {
+    const parsedCookie = JSON.parse(cookie);
+    if (new Date(parsedCookie.expiry) < new Date()) {
+      return { isValid: false, parsedCookie };
+    }
+    return { isValid: true };
+  } catch (e) {
+    return { isValid: false };
+  }
+}
+
 function createAndSetUID(res, parsedCookie) {
   const cookieExpiry = constants.hour / 12;
   let cookieUID;
@@ -36,11 +48,10 @@ function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     if (cookie === undefined) cookie = createAndSetUID(res);
     else {
-      try {
-        const parsedCookie = JSON.parse(cookie);
-        if (new Date(parsedCookie.expiry) < new Date()) cookie = createAndSetUID(res, parsedCookie);
-      } catch (e) {
-        cookie = createAndSetUID(res);
+      const validation = validateCookie(cookie);
+      if (!validation.isValid) {
+        if (validation.parsedCookie) cookie = createAndSetUID(res, validation.parsedCookie);
+        else cookie = createAndSetUID(res);
       }
     }
     const clientUA = useragent.parse(req.headers['user-agent']);
