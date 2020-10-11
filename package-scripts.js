@@ -44,7 +44,9 @@ module.exports = {
             deploy: series('nps doc', `surge ./doc -d ${process.env.DOCS_WEBSITE}`),
         },
         heroku: {
-            deploy: `${crossEnv('NODE_ENV=production')} parcel build src/bin/server.js --target node && nodemon -r dotenv/config dist/server.js`
+            deploy: series.nps('heroku.build', 'heroku.start'),
+            build: `${crossEnv('NODE_ENV=production')} parcel build src/bin/server.js --target node`,
+            start: `pm2-runtime start ecosystem.config.js --env production`
         },
         lint: {
             default: 'eslint src',
