@@ -35,7 +35,7 @@ export async function isResponseRecorded(req, res) {
   try {
     const { uid } = req.client;
     const formId = req.form.id;
-    const isRecorded = await ResponseModel.isSubmitted(formId, uid);
+    const isRecorded = await ResponseModel.isResponseSubmitted(formId, uid);
     return res.success('', { isRecorded });
   } catch (e) {
     return res.error(e);
@@ -45,5 +45,5 @@ export async function isResponseRecorded(req, res) {
 export default {
   list,
   submit,
-  isRecorded: isResponseRecorded,
+  isResponseRecorded,
 };

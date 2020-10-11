@@ -81,8 +81,10 @@ export async function list(formID, uid, { page = 1, limit = 50 }) {
   } throw new Error('Form not found');
 }
 
-export default {
+const ResponseModel = {
   submit,
   list,
-  isSubmitted: isResponseSubmitted,
+  isResponseSubmitted,
 };
+
+export default ResponseModel;

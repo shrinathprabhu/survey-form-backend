@@ -26,3 +26,7 @@ export async function deleteImage(deleteHash) {
   return response.body;
   // console.log(response.body);
 }
+
+export default {
+  saveImage,
+};
