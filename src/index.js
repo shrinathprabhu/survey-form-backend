@@ -30,7 +30,7 @@ app.response.success = function success(message, data, displayMessage, code) {
   // console.log(chalk.bgGreen(chalk.black('Exited with Success Response\n')));
 };
 
-app.response.error = function error(message, data, displayMessage, code) {
+app.response.error = function error(message, data, code) {
   // console.log(chalk.red(message));
   if (data) {
     console.log(chalk.red(data));
