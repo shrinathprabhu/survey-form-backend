@@ -2,7 +2,6 @@ import needle from 'needle';
 import { readFileSync } from 'fs';
 
 const clientId = process.env.IMGUR_CLIENTID;
-const clientSecret = process.env.IMGUR_CLIENTSECRET;
 const imgurApi = 'https://api.imgur.com/3';
 
 export async function saveImage(path) {
@@ -24,5 +23,6 @@ export async function deleteImage(deleteHash) {
       Authorization: `Client-ID ${clientId}`,
     },
   });
-  console.log(response.body);
+  return response.body;
+  // console.log(response.body);
 }

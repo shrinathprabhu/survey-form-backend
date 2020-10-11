@@ -16,3 +16,7 @@ export async function capture(id) {
   await browser.close();
   return path;
 }
+
+export default {
+  capture,
+};
