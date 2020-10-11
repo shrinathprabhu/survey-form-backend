@@ -14,7 +14,8 @@
     "lint:fix": "nps lint.fix",
     "prettier": "prettier --write '{src,__{tests,mocks}__}/**/*.js'",
     "start": "nps",
-    "test": "nps test"
+    "test": "nps test",
+    "coverage:report": "coveralls < ./coverage/lcov.info"
   },
   "repository": {
     "type": "git",
