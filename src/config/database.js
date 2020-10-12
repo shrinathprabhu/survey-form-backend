@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose';
 import chalk from 'chalk';
 import constants from './constants';

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import http from 'http';
 import https from 'https';
 import { readFileSync } from 'fs';
@@ -22,5 +23,7 @@ if (isProductionEnv && (constants.ssl.key && constants.ssl.cert)) {
 
 server.listen(constants.port);
 
-server.on('listening', () => console.log(`${isHttps ? 'Https' : 'Http'} server started and is listening on port ${constants.port}`));
+server.on('listening', () => {
+  console.log(`${isHttps ? 'Https' : 'Http'} server started and is listening on port ${constants.port}`);
+});
 server.on('error', (error) => console.log(error));

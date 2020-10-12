@@ -16,7 +16,16 @@ const Questionnaire = new Schema({
     type: String,
     required: true,
     trim: true,
-    enum: ['Short answer', 'Paragraph', 'Multiple choice', 'Checkbox', 'Dropdown', 'Range', 'Date', 'Time'],
+    enum: [
+      'Short answer',
+      'Paragraph',
+      'Multiple choice',
+      'Checkbox',
+      'Dropdown',
+      'Range',
+      'Date',
+      'Time',
+    ],
     default: 'Short answer',
   },
   media: [

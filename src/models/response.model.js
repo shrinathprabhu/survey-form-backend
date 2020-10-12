@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Schema, Types } from 'mongoose';
 import db from '../config/database';
 import constants from '../config/constants';
@@ -68,7 +69,10 @@ export async function list(formID, uid, { page = 1, limit = 50 }) {
   // console.log(can);
   if (can) {
     const skipValue = constants.calculateSkipValue(page, limit);
-    const responses = await Response.find({ formId }, 'responses client').skip(skipValue).limit(limit).lean()
+    const responses = await Response.find({ formId }, 'responses client')
+      .skip(skipValue)
+      .limit(limit)
+      .lean()
       .exec();
     const totalRecords = await Response.countDocuments({ formId }).exec();
     const dataList = responses.map((response) => ({

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Schema } from 'mongoose';
 import db from '../config/database';
 import constants from '../config/constants';
@@ -61,7 +62,7 @@ export async function create({ title, description, creator }) {
     title, description, creator, status: 'active',
   })).toJSON();
   return {
-    id: form.id,
+    id: form._id,
     title: form.title,
     description: form.description,
     status: form.status,
@@ -70,20 +71,29 @@ export async function create({ title, description, creator }) {
 }
 
 export async function fetch(id, uid) {
-  let form = await Form.findOne({ _id: id, 'creator.uid': uid, status: { $in: ['active', 'inactive'] } }).lean().exec();
+  let form = await Form.findOne(
+    {
+      _id: id,
+      'creator.uid': uid,
+      status: { $in: ['active', 'inactive'] },
+    },
+  ).lean().exec();
   if (form) {
     return {
-      id: form.id,
+      id: form._id,
       title: form.title,
       description: form.description,
       questionnaires: form.questionnaires,
       isCreator: true,
     };
   }
-  form = await Form.findOne({ _id: id, status: 'active' }, 'title description questionnaires').lean().exec();
+  form = await Form.findOne(
+    { _id: id, status: 'active' },
+    'title description questionnaires',
+  ).lean().exec();
   if (form) {
     return {
-      id: form.id,
+      id: form._id,
       title: form.title,
       description: form.description,
       questionnaires: form.questionnaires,
@@ -93,12 +103,19 @@ export async function fetch(id, uid) {
 
 export async function list(uid, { page = 1, limit = 20 }) {
   const skipValue = constants.calculateSkipValue(page, limit);
-  const forms = await Form.find({ 'creator.uid': uid, status: { $in: ['active', 'inactive'] } }, 'title description').sort({ createdAt: -1 }).skip(skipValue).limit(limit)
+  const forms = await Form.find(
+    {
+      'creator.uid': uid, status: { $in: ['active', 'inactive'] },
+    },
+    'title description',
+  ).sort({ createdAt: -1 }).skip(skipValue).limit(limit)
     .lean()
     .exec();
-  const totalRecords = await Form.countDocuments({ 'creator.uid': uid, status: 'active' }).exec();
+  const totalRecords = await Form.countDocuments(
+    { 'creator.uid': uid, status: 'active' },
+  ).exec();
   const dataList = forms.map((form) => ({
-    id: form.id,
+    id: form._id,
     title: form.title,
     description: form.description,
   }));
@@ -129,7 +146,7 @@ export async function edit(id, uid, {
   if (form) {
     form = form.toJSON();
     return {
-      id: form.id,
+      id: form._id,
       title: form.title,
       description: form.description,
       status: form.status,
@@ -142,9 +159,19 @@ export async function edit(id, uid, {
 }
 
 export async function remove(id, uid) {
-  const form = await Form.findOneAndUpdate({ _id: id, 'creator.uid': uid, status: { $in: ['active', 'inactive'] } }, { status: 'deleted', deletedAt: new Date() }).lean().exec();
+  const form = await Form.findOneAndUpdate(
+    {
+      _id: id,
+      'creator.uid': uid,
+      status: { $in: ['active', 'inactive'] },
+    },
+    {
+      status: 'deleted',
+      deletedAt: new Date(),
+    },
+  ).lean().exec();
   if (form) {
-    return console.log('Form deleted by admin', form.id);
+    return console.log('Form deleted by admin', form._id);
   }
   throw new Error('Form not found');
 }
@@ -156,7 +183,10 @@ export async function canAccess(id, uid) {
 }
 
 export async function publish(id, uid) {
-  const form = await Form.findOneAndUpdate({ _id: id, 'creator.uid': uid, status: 'active' }, { isPublished: true }).lean().exec();
+  const form = await Form.findOneAndUpdate(
+    { _id: id, 'creator.uid': uid, status: 'active' },
+    { isPublished: true },
+  ).lean().exec();
   if (form) {
     return {
       id: form.id,
