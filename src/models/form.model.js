@@ -72,11 +72,7 @@ export async function create({ title, description, creator }) {
 
 export async function fetch(id, uid) {
   let form = await Form.findOne(
-    {
-      _id: id,
-      'creator.uid': uid,
-      status: { $in: ['active', 'inactive'] },
-    },
+    { _id: id, 'creator.uid': uid, status: { $in: ['active', 'inactive'] } },
   ).lean().exec();
   if (form) {
     return {
@@ -171,7 +167,7 @@ export async function remove(id, uid) {
     },
   ).lean().exec();
   if (form) {
-    return console.log('Form deleted by admin', form._id);
+    return;
   }
   throw new Error('Form not found');
 }

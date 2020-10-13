@@ -34,7 +34,7 @@ const Response = db.model('response', ResponseSchema);
 
 export async function isResponseSubmitted(formID, uid) {
   let formId;
-  if (typeof formID) {
+  if (typeof formID === 'string') {
     formId = Types.ObjectId(formId);
   } else {
     formId = formID;

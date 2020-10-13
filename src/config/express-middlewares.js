@@ -67,7 +67,6 @@ function secureClient(req, res, next) {
     };
     next();
   } catch (e) {
-    console.log(e);
     res.error(e);
   }
 }
