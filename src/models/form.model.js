@@ -83,10 +83,8 @@ export async function fetch(id, uid) {
       isCreator: true,
     };
   }
-  form = await Form.findOne(
-    { _id: id, status: 'active' },
-    'title description questionnaires',
-  ).lean().exec();
+  form = await Form.findOne({ _id: id, status: 'active' }, 'title description questionnaires')
+    .lean().exec();
   if (form) {
     return {
       id: form._id,

@@ -85,16 +85,18 @@ export default {
     }));
     app.use(helmet());
     // Starting sentry handlers
-    Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-      integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Tracing.Integrations.Express({ app }),
-      ],
-      tracesSampleRate: 1.0,
-    });
-    app.use(Sentry.Handlers.requestHandler());
-    app.use(Sentry.Handlers.tracingHandler());
+    if (constants.nodeEnv === 'production') {
+      Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        integrations: [
+          new Sentry.Integrations.Http({ tracing: true }),
+          new Tracing.Integrations.Express({ app }),
+        ],
+        tracesSampleRate: 1.0,
+      });
+      app.use(Sentry.Handlers.requestHandler());
+      app.use(Sentry.Handlers.tracingHandler());
+    }
     app.use(cookieParser(constants.cookieSecret));
     app.use(secureClient);
     app.use(methodOverride());

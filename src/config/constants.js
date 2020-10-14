@@ -12,6 +12,7 @@ constants.hour = 60 * 60 * 1000;
 constants.day = 24 * constants.hour;
 constants.cookieMaxAge = 4 * 365 * constants.day;
 constants.website = process.env.WEBSITE_BASE;
+constants.nodeEnv = process.env.NODE_ENV;
 /**
  *
  * @param {Number} page
