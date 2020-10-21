@@ -109,3 +109,5 @@ coverage/
 tmp/
 
 flamegraph*
+perf.data
+perfs.out
