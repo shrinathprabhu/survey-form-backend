@@ -14,6 +14,7 @@ module.exports = {
         clean: {
             description: 'Clean dist folder.',
             default: rimraf('dist'),
+            dev: series(rimraf('dist'), rimraf('.cache'))
         },
         default: {
             description: 'Start project with pm2 on production.',
@@ -27,12 +28,22 @@ module.exports = {
             default: {
                 script: concurrent.nps('dev.watch', 'dev.start'),
             },
+            build: {
+                script: series.nps('clean.dev', 'dev.build.build'),
+                build: `${crossEnv('NODE_ENV=development')} parcel build src/bin/server.js --target node`
+            },
             watch: {
                 description: 'Parcel watch for change and compile.',
                 script: `${crossEnv('NODE_ENV=development')} parcel watch src/bin/server.js --target node`,
             },
             withDebug: {
                 script: `${crossEnv('NODE_ENV=development')} MONGOOSE_DEBUG=true DEBUG=express:* nodemon -r dotenv/config dist/server.js`,
+            },
+            flamegraph: {
+                observe: `node --prof -r dotenv/config dist/server.js`,
+                script: series.nps('dev.build', 'dev.flamegraph.parallel'),
+                parallel: concurrent.nps('dev.flamegraph.observe', 'dev.flamegraph.serve'),
+                serve: `node --prof-process --preprocess -j isolate*.log | flamebearer`
             },
             debug: {
                 description: 'Running on dev environment with debug on.',
