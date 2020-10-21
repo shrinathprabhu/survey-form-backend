@@ -5,8 +5,8 @@ constants.port = process.env.PORT;
 constants.cookieSecret = process.env.COOKIE_SECRET;
 constants.testingProtection = true;
 constants.ssl = {
-  key: process.env.SSL_KEY_PATH,
-  cert: process.env.SSL_CERT_PATH,
+	key: process.env.SSL_KEY_PATH,
+	cert: process.env.SSL_CERT_PATH,
 };
 constants.hour = 60 * 60 * 1000;
 constants.day = 24 * constants.hour;
@@ -20,7 +20,7 @@ constants.nodeEnv = process.env.NODE_ENV;
  * @returns {Number} skipValue
  */
 constants.calculateSkipValue = function calculateSkipValue(page, limit) {
-  return page * limit - limit;
+	return page * limit - limit;
 };
 
 /**
@@ -40,13 +40,13 @@ constants.calculateSkipValue = function calculateSkipValue(page, limit) {
             }
  */
 constants.paginate = function paginate(page, limit, totalRecords, list) {
-  return {
-    page,
-    size: list.length,
-    totalRecords,
-    pages: Math.ceil(totalRecords / limit),
-    list,
-  };
+	return {
+		page,
+		size: list.length,
+		totalRecords,
+		pages: Math.ceil(totalRecords / limit),
+		list,
+	};
 };
 
 export default constants;
