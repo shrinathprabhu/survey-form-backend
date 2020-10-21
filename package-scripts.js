@@ -14,7 +14,7 @@ module.exports = {
         clean: {
             description: 'Clean dist folder.',
             default: rimraf('dist'),
-            dev: series(rimraf('dist'), rimraf('.cache'))
+            dev: series(rimraf('dist'), rimraf('.cache'), rimraf('isolate-*.log'), rimraf('flamegraph.htm*'))
         },
         default: {
             description: 'Start project with pm2 on production.',
@@ -43,7 +43,7 @@ module.exports = {
                 observe: `node --prof -r dotenv/config dist/server.js`,
                 script: series.nps('dev.build', 'dev.flamegraph.parallel'),
                 parallel: concurrent.nps('dev.flamegraph.observe', 'dev.flamegraph.serve'),
-                serve: `node --prof-process --preprocess -j isolate*.log | flamebearer`
+                serve: `wait-on isolate*.log && node --prof-process --preprocess -j isolate*.log | flamebearer`
             },
             debug: {
                 description: 'Running on dev environment with debug on.',

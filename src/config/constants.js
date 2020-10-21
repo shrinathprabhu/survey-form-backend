@@ -20,7 +20,7 @@ constants.nodeEnv = process.env.NODE_ENV;
  * @returns {Number} skipValue
  */
 constants.calculateSkipValue = function calculateSkipValue(page, limit) {
-  return (page * limit) - limit;
+  return page * limit - limit;
 };
 
 /**
