@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 const Questionnaire = new Schema(
   {
@@ -6,7 +6,7 @@ const Questionnaire = new Schema(
       type: String,
       required: true,
       trim: true,
-      default: "Untitled Question",
+      default: 'Untitled Question',
     },
     index: Number,
     description: {
@@ -18,16 +18,16 @@ const Questionnaire = new Schema(
       required: true,
       trim: true,
       enum: [
-        "Short answer",
-        "Paragraph",
-        "Multiple choice",
-        "Checkbox",
-        "Dropdown",
-        "Range",
-        "Date",
-        "Time",
+        'Short answer',
+        'Paragraph',
+        'Multiple choice',
+        'Checkbox',
+        'Dropdown',
+        'Range',
+        'Date',
+        'Time',
       ],
-      default: "Short answer",
+      default: 'Short answer',
     },
     media: [
       {
@@ -75,7 +75,7 @@ const Questionnaire = new Schema(
   {
     versionKey: false,
     timestamps: true,
-  }
+  },
 );
 
 export default Questionnaire;

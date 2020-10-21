@@ -1,7 +1,7 @@
-import { unlinkSync } from "fs";
-import * as FormModel from "../models/form.model";
-import { capture } from "../utils/screenshot";
-import { saveImage, deleteImage } from "../utils/imgur";
+import { unlinkSync } from 'fs';
+import * as FormModel from '../models/form.model';
+import { capture } from '../utils/screenshot';
+import { saveImage, deleteImage } from '../utils/imgur';
 
 function captureScreenshotAndUpload(id, deleteHash) {
   capture(id)
@@ -25,7 +25,7 @@ export async function fetch(req, res) {
     const { id } = req.params;
     const { uid } = req.client;
     const form = await FormModel.fetch(id, uid);
-    return res.success("Details fetched", form);
+    return res.success('Details fetched', form);
   } catch (e) {
     return res.error(e);
   }
@@ -37,7 +37,7 @@ export async function create(req, res) {
     const creator = req.client;
     const form = await FormModel.create({ title, description, creator });
     captureScreenshotAndUpload(form.id);
-    return res.success("Form created", form);
+    return res.success('Form created', form);
   } catch (e) {
     return res.error(e);
   }
@@ -47,7 +47,9 @@ export async function edit(req, res) {
   try {
     const { id } = req.params;
     const { uid } = req.client;
-    const { title, description, questionnaires, section } = req.body;
+    const {
+      title, description, questionnaires, section,
+    } = req.body;
     const form = await FormModel.edit(id, uid, {
       title,
       description,
@@ -55,7 +57,7 @@ export async function edit(req, res) {
       section,
     });
     captureScreenshotAndUpload(form.id);
-    return res.success("Form saved", form);
+    return res.success('Form saved', form);
   } catch (e) {
     return res.error(e);
   }
@@ -66,7 +68,7 @@ export async function remove(req, res) {
     const { id } = req.params;
     const { uid } = req.client;
     await FormModel.remove(id, uid);
-    return res.success("Form deleted");
+    return res.success('Form deleted');
   } catch (e) {
     return res.error(e);
   }
@@ -80,7 +82,7 @@ export async function list(req, res) {
       page: page ? Number(page) : 1,
       limit: limit ? Number(limit) : 20,
     });
-    return res.success("List fetched", forms);
+    return res.success('List fetched', forms);
   } catch (e) {
     return res.error(e);
   }

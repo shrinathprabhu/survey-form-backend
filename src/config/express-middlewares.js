@@ -1,15 +1,15 @@
-import bodyParser from "body-parser";
-import compression from "compression";
-import cors from "cors";
-import helmet from "helmet";
-import methodOverride from "method-override";
-import morgan from "morgan";
-import cookieParser from "cookie-parser";
-import { v4 as uuidv4 } from "uuid";
-import useragent from "useragent";
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
-import constants from "./constants";
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import cors from 'cors';
+import helmet from 'helmet';
+import methodOverride from 'method-override';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import { v4 as uuidv4 } from 'uuid';
+import useragent from 'useragent';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
+import constants from './constants';
 
 function validateCookie(cookie) {
   try {
@@ -35,13 +35,13 @@ function createAndSetUID(res, parsedCookie) {
     uid: cookieUID,
     expiry: new Date(Date.now() + cookieExpiry),
   });
-  res.cookie("uid", uid, {
+  res.cookie('uid', uid, {
     maxAge: constants.cookieMaxAge,
     signed: true,
     secret: constants.cookieSecret,
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: 'None',
   });
   return uid;
 }
@@ -53,17 +53,16 @@ function secureClient(req, res, next) {
     else {
       const validation = validateCookie(cookie);
       if (!validation.isValid) {
-        if (validation.parsedCookie)
-          cookie = createAndSetUID(res, validation.parsedCookie);
+        if (validation.parsedCookie) cookie = createAndSetUID(res, validation.parsedCookie);
         else cookie = createAndSetUID(res);
       }
     }
-    const clientUA = useragent.parse(req.headers["user-agent"]);
+    const clientUA = useragent.parse(req.headers['user-agent']);
     let ip = req.socket.remoteAddress;
-    if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "");
+    if (ip.startsWith('::ffff:')) ip = ip.replace('::ffff:', '');
     const parsedCookie = JSON.parse(cookie);
     req.client = {
-      userAgent: req.headers["user-agent"],
+      userAgent: req.headers['user-agent'],
       browser: clientUA.family,
       os: clientUA.os.family,
       uid: parsedCookie.uid,
@@ -77,21 +76,21 @@ function secureClient(req, res, next) {
 
 export default {
   init: function init(app) {
-    app.use(morgan("tiny"));
+    app.use(morgan('tiny'));
     app.use(compression());
     app.use(
       cors({
         origin: [
-          "https://openforms.herokuapp.com",
-          "http://localhost:8080",
+          'https://openforms.herokuapp.com',
+          'http://localhost:8080',
           /http:\/\/192\.168\.0\.[0-9]:8080/,
         ],
         credentials: true,
-      })
+      }),
     );
     app.use(helmet());
     // Starting sentry handlers
-    if (constants.nodeEnv === "production") {
+    if (constants.nodeEnv === 'production') {
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations: [
