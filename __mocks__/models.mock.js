@@ -19,7 +19,7 @@ export let formsData = [
         },
         status: "active",
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
     },
     {
         _id: Types.ObjectId(),
@@ -35,6 +35,6 @@ export let formsData = [
         },
         status: "active",
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
     },
-]
+];
