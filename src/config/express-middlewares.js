@@ -74,8 +74,35 @@ function secureClient(req, res, next) {
   }
 }
 
+function detectAndAvoidBots(req, res, next) {
+  /** Inspired from https://antoinevastel.com/bot/2020/05/10/express-middleware-bot.html */
+  const botPatterns = [
+    /HeadlessChrome/,
+    /[wW]get/,
+    /Python-urllib/,
+    /phpcrawl/,
+    /PhantomJS/,
+    /curl/,
+  ];
+
+  if (process.env.NODE_ENV !== 'development') {
+    botPatterns.push(/PostmanRuntime/);
+  }
+
+  const userAgent = req.headers['user-agent'];
+
+  const isBot = botPatterns.find((botPattern) => userAgent.match(botPattern));
+  if (isBot) {
+    return res
+      .status(406)
+      .send("Sorry, currently we don't support bots and crawlers");
+  }
+  return next();
+}
+
 export default {
   init: function init(app) {
+    app.use(detectAndAvoidBots);
     app.use(morgan('tiny'));
     app.use(compression());
     app.use(
