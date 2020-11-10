@@ -105,3 +105,9 @@ dist
 
 # dont store coverage reports
 coverage/
+
+tmp/
+
+flamegraph*
+perf.data
+perfs.out

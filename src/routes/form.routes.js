@@ -1,23 +1,27 @@
 import { Router } from 'express';
-import FormController from '../controllers/form.controller';
+import * as FormController from '../controllers/form.controller';
 import ResponseApis from './response.routes';
 
-let routes = Router();
+const routes = Router();
 
-routes.use('/:id/responses', (req, res, next) => {
-    let id = req.params.id;
+routes.use(
+  '/:id/responses',
+  (req, res, next) => {
+    const { id } = req.params;
     req.form = {
-        id
-    }
+      id,
+    };
     next();
-}, ResponseApis);
+  },
+  ResponseApis,
+);
 
 routes.get('/', FormController.list);
 routes.get('/:id', FormController.fetch);
 routes.post('/create', FormController.create);
 routes.put('/:id/save', FormController.edit);
 routes.delete('/:id', FormController.remove);
-//export
-//import
+// export
+// import
 
 export default routes;

@@ -1,6 +1,5 @@
 {
     "extends": [
-        "prettier",
         "airbnb-base"
     ]
 }
