@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose';
 import chalk from 'chalk';
 import constants from './constants';
@@ -16,7 +17,13 @@ conn.mongo = mongoose.mongo;
 conn.on('error', (err) => {
   console.log(chalk.bgRed('Error connecting to database'));
   console.log(chalk.red(err));
-  console.log(chalk.bgRed(chalk.bold(chalk.yellow('Resolve the issues and restart server again'))));
+  console.log(
+    chalk.bgRed(
+      chalk.bold(
+        chalk.yellow('Resolve the issues and restart server again'),
+      ),
+    ),
+  );
 });
 
 conn.on('connected', () => {

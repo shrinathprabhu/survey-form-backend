@@ -11,6 +11,18 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import constants from './constants';
 
+function validateCookie(cookie) {
+  try {
+    const parsedCookie = JSON.parse(cookie);
+    if (new Date(parsedCookie.expiry) < new Date()) {
+      return { isValid: false, parsedCookie };
+    }
+    return { isValid: true };
+  } catch (e) {
+    return { isValid: false };
+  }
+}
+
 function createAndSetUID(res, parsedCookie) {
   const cookieExpiry = constants.hour / 12;
   let cookieUID;
@@ -19,7 +31,10 @@ function createAndSetUID(res, parsedCookie) {
   } else {
     cookieUID = uuidv4();
   }
-  const uid = JSON.stringify({ uid: cookieUID, expiry: new Date(Date.now() + cookieExpiry) });
+  const uid = JSON.stringify({
+    uid: cookieUID,
+    expiry: new Date(Date.now() + cookieExpiry),
+  });
   res.cookie('uid', uid, {
     maxAge: constants.cookieMaxAge,
     signed: true,
@@ -36,11 +51,10 @@ function secureClient(req, res, next) {
     let cookie = req.signedCookies.uid;
     if (cookie === undefined) cookie = createAndSetUID(res);
     else {
-      try {
-        const parsedCookie = JSON.parse(cookie);
-        if (new Date(parsedCookie.expiry) < new Date()) cookie = createAndSetUID(res, parsedCookie);
-      } catch (e) {
-        cookie = createAndSetUID(res);
+      const validation = validateCookie(cookie);
+      if (!validation.isValid) {
+        if (validation.parsedCookie) cookie = createAndSetUID(res, validation.parsedCookie);
+        else cookie = createAndSetUID(res);
       }
     }
     const clientUA = useragent.parse(req.headers['user-agent']);
@@ -56,7 +70,6 @@ function secureClient(req, res, next) {
     };
     next();
   } catch (e) {
-    console.log(e);
     res.error(e);
   }
 }
@@ -65,22 +78,30 @@ export default {
   init: function init(app) {
     app.use(morgan('tiny'));
     app.use(compression());
-    app.use(cors({
-      origin: ['https://openforms.herokuapp.com', 'http://localhost:8080', /http:\/\/192\.168\.0\.[0-9]:8080/],
-      credentials: true,
-    }));
+    app.use(
+      cors({
+        origin: [
+          'https://openforms.herokuapp.com',
+          'http://localhost:8080',
+          /http:\/\/192\.168\.0\.[0-9]:8080/,
+        ],
+        credentials: true,
+      }),
+    );
     app.use(helmet());
     // Starting sentry handlers
-    Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-      integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Tracing.Integrations.Express({ app }),
-      ],
-      tracesSampleRate: 1.0,
-    });
-    app.use(Sentry.Handlers.requestHandler());
-    app.use(Sentry.Handlers.tracingHandler());
+    if (constants.nodeEnv === 'production') {
+      Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        integrations: [
+          new Sentry.Integrations.Http({ tracing: true }),
+          new Tracing.Integrations.Express({ app }),
+        ],
+        tracesSampleRate: 1.0,
+      });
+      app.use(Sentry.Handlers.requestHandler());
+      app.use(Sentry.Handlers.tracingHandler());
+    }
     app.use(cookieParser(constants.cookieSecret));
     app.use(secureClient);
     app.use(methodOverride());

@@ -1,44 +1,51 @@
+/* eslint-disable no-underscore-dangle */
 import { Schema, Types } from 'mongoose';
 import db from '../config/database';
 import constants from '../config/constants';
 import { canAccess } from './form.model';
 
-const ResponseSchema = new Schema({
-  formId: {
-    type: Schema.Types.ObjectId,
-    ref: 'forms',
-  },
-  client: {
-    uid: String,
-    ip: String,
-    browser: String,
-    os: String,
-    userAgent: String,
-  },
-  responses: [
-    {
-      _id: false,
-      questionId: Schema.Types.ObjectId,
-      question: String,
-      response: String,
+const ResponseSchema = new Schema(
+  {
+    formId: {
+      type: Schema.Types.ObjectId,
+      ref: 'forms',
     },
-  ],
-}, {
-  timestamps: true,
-  strict: 'throw',
-  useNestedStrict: true,
-});
+    client: {
+      uid: String,
+      ip: String,
+      browser: String,
+      os: String,
+      userAgent: String,
+    },
+    responses: [
+      {
+        _id: false,
+        questionId: Schema.Types.ObjectId,
+        question: String,
+        response: String,
+      },
+    ],
+  },
+  {
+    timestamps: true,
+    strict: 'throw',
+    useNestedStrict: true,
+  },
+);
 
-const Response = db.model('response', ResponseSchema);
+export const Response = db.model('response', ResponseSchema);
 
 export async function isResponseSubmitted(formID, uid) {
   let formId;
-  if (typeof formID) {
+  if (typeof formID === 'string') {
     formId = Types.ObjectId(formId);
   } else {
     formId = formID;
   }
-  const response = await Response.findOne({ formId, 'client.uid': uid }).exec();
+  const response = await Response.findOne({
+    formId,
+    'client.uid': uid,
+  }).exec();
   if (response && response.id) return true;
   return false;
 }
@@ -68,7 +75,10 @@ export async function list(formID, uid, { page = 1, limit = 50 }) {
   // console.log(can);
   if (can) {
     const skipValue = constants.calculateSkipValue(page, limit);
-    const responses = await Response.find({ formId }, 'responses client').skip(skipValue).limit(limit).lean()
+    const responses = await Response.find({ formId }, 'responses client')
+      .skip(skipValue)
+      .limit(limit)
+      .lean()
       .exec();
     const totalRecords = await Response.countDocuments({ formId }).exec();
     const dataList = responses.map((response) => ({
@@ -78,7 +88,8 @@ export async function list(formID, uid, { page = 1, limit = 50 }) {
       ip: response.client.ip,
     }));
     return constants.paginate(page, limit, totalRecords, dataList);
-  } throw new Error('Form not found');
+  }
+  throw new Error('Form not found');
 }
 
 const ResponseModel = {

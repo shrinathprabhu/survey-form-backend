@@ -17,14 +17,10 @@ export async function list(req, res) {
     const { uid } = req.client;
     const formId = req.form.id;
     const { page, limit } = req.query;
-    const responses = await ResponseModel.list(
-      formId,
-      uid,
-      {
-        page: page ? Number(page) : 1,
-        limit: limit ? Number(limit) : 50,
-      },
-    );
+    const responses = await ResponseModel.list(formId, uid, {
+      page: page ? Number(page) : 1,
+      limit: limit ? Number(limit) : 50,
+    });
     return res.success('List fetched', responses);
   } catch (e) {
     return res.error(e);
